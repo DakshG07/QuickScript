@@ -2,18 +2,17 @@ import sys
 #Check if functions exist.
 def check_func(word):
     #Commands
-    commands = ['say']
+    commands = ['LOG']
     #Get word in lowercase; follow DRY.
-    lword = word.lower()
     #Check if word exists.
-    if lword in commands:
-        return lword
+    if word in commands:
+        return word
     #If word doesn't exist(nothing returns), return None.
     return None
 
 def exec(cmd, words, line):
     #Link command with function, then execute function. 
-    commands = {'say' : say, None : none}
+    commands = {'LOG' : say, None : none}
     #Run function linked with command.
     commands[cmd](words, line)
 
@@ -22,6 +21,7 @@ def say(words, line):
     #Variables
     string = ""
     inString = False
+    markdown = False
     
     #Get characters
     chars = splitWord(line)
@@ -32,6 +32,16 @@ def say(words, line):
                 inString = True
             else:
                 inString = False
+        elif char == '\\':
+            if markdown:
+                string += char
+                markdown = False
+            else:
+                markdown = True
+        elif markdown:
+            if char == 'n':
+                string += "\n"
+                markdown = False
         #If in string, add character to string.
         elif inString:
             string += char
